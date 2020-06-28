@@ -16,5 +16,8 @@ acgtIndex=np.array([[0,1,2,3,4],
                 [4,3,2,1,0]])
 
 
+miu = np.mean(signalH[acgtIndex == 0])
+print(miu)
+
 # print(np.diag(sigma_square))
 
