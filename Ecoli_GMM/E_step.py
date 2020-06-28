@@ -8,7 +8,7 @@ def update_W(data_afterNorma, miu, sigma_square, alpha):
     # sigma_square 是每个高斯分布的方差
     # pdf为概率密度函数
     # W 是每个样本属于每一簇的概率，是个 clusters_num * points_num 大小的矩阵。一个子高斯分布就是一簇
-    # Pi 是每一簇的比重
+    # alpha 是每一簇的比重
 
     points_num = len(data_afterNorma)
     clusters_num = 4   
