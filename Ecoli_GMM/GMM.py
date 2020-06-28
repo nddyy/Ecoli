@@ -7,12 +7,7 @@ import E_step
 
 if __name__ == '__main__':
     
-    data_path = 'F://wd/Ecoli/GMM_input.mat'
-
-    data = scio.loadmat(data_path)
-
-    print(len(data.get('acgtIndex')))
-    print(len(data.get('data_afterNorma')))
+    # 输入为三个 N X M 的ndarray，分别为 signalH,signalL,acgtIndex
 
     # miu,sigma_square,alpha = get_miu_sigma_alpha.get_miu_sigma_alpha(signalH,signalL,acgtIndex)
     # # print(miu,'\n',sigma_square,'\n',alpha)
