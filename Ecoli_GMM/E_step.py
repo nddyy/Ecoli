@@ -19,6 +19,3 @@ def update_W(data_afterNorma, miu, sigma_square, alpha):
 
     return W
 
-# def update_Pi(W):
-#     Pi = W.sum(axis=0) / W.sum()
-#     return Pi
