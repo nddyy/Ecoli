@@ -1,23 +1,20 @@
 import numpy as np
+import scipy.io as scio
 
-signalH=np.array([[1.0,2.0,3.0,4.0,5.0],
-                [6.0,7.0,8.0,9.0,10.0],
-                [11.0,12.0,13.0,14.0,15.0],
-                [16.0,17.0,18.0,19.0,20.0]],dtype=np.uint16)
+data_path = 'F://wd/Ecoli/GMM_input.mat'
+data = scio.loadmat(data_path)
+acgtIndex = data.get('acgtIndex')
+data_after_pre_call = data.get('data_afterNorma')  # the data just for test
+data_needDeal = data_after_pre_call[acgtIndex[:,0] != 6]
 
-signalL=np.array([[1.0,2.0,3.0,4.0,5.0],
-                [6.0,7.0,8.0,9.0,10.0],
-                [11.0,12.0,13.0,14.0,15.0],
-                [16.0,17.0,18.0,19.0,20.0]],dtype=np.uint16)
+print(acgtIndex.shape[1])
+b = np.where(acgtIndex[:,0] == 1,1,0)
+print(b)
 
-acgtIndex=np.array([[0,1,2,3,4],
-                [4,3,2,1,0],
-                [0,1,2,3,4],
-                [4,3,2,1,0]])
+a = np.zeros(acgtIndex.shape[0])
 
-
-miu = np.mean(signalH[acgtIndex == 0])
-print(miu)
-
+for i in range(2):
+    a += data_after_pre_call[:,1] * b    
+print(a)
 # print(np.diag(sigma_square))
 

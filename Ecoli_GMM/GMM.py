@@ -28,7 +28,7 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(20,10))
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
-    colors = ['b','g','r','gold']
+    colors = ['b','g','r','y']
     ax1.set_title('NO_GMM')
     ax2.set_title('GMM')
     plt.xlabel('H')
