@@ -16,34 +16,52 @@ if __name__ == "__main__":
     data = scio.loadmat(data_path)
     acgtIndex = data.get('acgtIndex')
     data_after_pre_call = data.get('data_afterNorma')  # the data just for test
-    data_needDeal = data_after_pre_call[acgtIndex[:,0] != 6]
-    q_mean_T,q_mean_A = np.zeros(4),np.zeros(4)
-    acbi_T,acbi_A = np.zeros(acgtIndex.shape[0]),np.zeros(acgtIndex.shape[0])
-    count_T,count_A = np.zeros(acgtIndex.shape[0]),np.zeros(acgtIndex.shape[0])
-    validDNB = np.ones(acgtIndex.shape[0])
 
-    # for i in range(FOV_NUM):
-    for j in range(CYCLE_NUM):
-        # 调用pre_call
-
-        nor_ints_T,nor_q_T = ints_Q_normal(data_after_pre_call,acgtIndex,2,0)   # 获得T碱基的H通道的Q值
-        nor_ints_A,nor_q_A = ints_Q_normal(data_after_pre_call,acgtIndex,1,1)   # 获得A碱基的L通道的Q值
-        q_mean_T += nor_q_T
-        q_mean_A += nor_q_A
-        count_T += np.where(acgtIndex[:,0] == 2,1,0)
-        count_A += np.where(acgtIndex[:,0] == 1,1,0)
-        acbi_T += data_after_pre_call[:,0] * np.where(acgtIndex[:,0] == 2,1,0)
-        acbi_A += data_after_pre_call[:,1] * np.where(acgtIndex[:,0] == 1,1,0)
-    q_mean_T = q_mean_T/CYCLE_NUM
-    q_mean_A = q_mean_A/CYCLE_NUM
-    acbi_T = acbi_T/count_T
-    acbi_A = acbi_A/count_A
-    acbi_T[np.isnan(acbi_T)] = 0
-    acbi_A[np.isnan(acbi_A)] = 0
-    acbi_T[np.where(acbi_T > q_mean_T[3])] = 0
-    acbi_A[np.where(acbi_A > q_mean_A[3])] = 0
-    validDNB[np.logical_and(acbi_T,acbi_A) == 0] = 0
-    # np.savetxt('test.txt',np.logical_and(acbi_T,acbi_A),fmt = '%f')
-    acbi_hist(acbi_A)
+    # data1_path = 'F://wd/Ecoli/1.mat'
+    # data2_path = 'F://wd/Ecoli/2.mat'
+    # data1 = scio.loadmat(data1_path)
+    # data2 = scio.loadmat(data2_path)
+    # signalH1 = data1.get('dataH')
+    # signalL1 = data1.get('dataL')
+    # acgtIndex1 = data1.get('acgtIndex1')
+    # signalH2 = data2.get('dataH')
+    # signalL2 = data2.get('dataL')
+    # acgtIndex2 = data2.get('acgtIndex1')
 
     
+
+    q_mean = np.zeros(4)
+    acbi = np.zeros(acgtIndex.shape[0])
+    count = np.zeros(acgtIndex.shape[0])
+    validDNB = np.ones([FOV_NUM,acgtIndex.shape[0]])
+
+    for i in range(FOV_NUM):
+        for j in range(CYCLE_NUM):
+            # 调用pre_call
+
+            nor_ints_T,nor_q_T = ints_Q_normal(data_after_pre_call,acgtIndex,2,0)   # 获得T碱基的H通道的Q值
+            nor_ints_A,nor_q_A = ints_Q_normal(data_after_pre_call,acgtIndex,1,1)   # 获得A碱基的L通道的Q值
+            q_mean = q_mean + nor_q_T + nor_q_A
+            count = count + np.where(acgtIndex[:,0] == 2,1,0) + np.where(acgtIndex[:,0] == 1,1,0)
+            acbi = acbi + data_after_pre_call[:,0] * np.where(acgtIndex[:,0] == 2,1,0) + data_after_pre_call[:,1] * np.where(acgtIndex[:,0] == 1,1,0)
+        q_mean = q_mean/CYCLE_NUM
+        acbi = acbi/count
+        acbi[np.isnan(acbi)] = 0
+        acbi[np.where(acbi > q_mean[3])] = 0
+        validDNB[i,:][acbi == 0] = 0
+        print(validDNB[i])
+        # data_after_pre_call[:,0] = data_after_pre_call[:,0]
+        # frequency,bins_limits,patches = acbi_hist(acbi)
+
+    
+
+def data_pre_deal(signalH,signalL,acgtIndex):
+    # 把存放H通道和L通道亮度值的 N X M 的数组拼接成 DNB_num X 2 的二维数组
+    # 把存放acgt标签的 N X M 的数组变形为 DNB_num X 1 的二维数组
+    
+    signalH = np.reshape(signalH,[-1,1])
+    signalL = np.reshape(signalL,(-1,1))
+    acgtIndex = np.reshape(acgtIndex,(-1,1))
+    signal_H_L = np.stack((signalH[:,0],signalL[:,0]),axis=1)
+
+    return signal_H_L,acgtIndex
