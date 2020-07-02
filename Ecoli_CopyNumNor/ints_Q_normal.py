@@ -13,7 +13,5 @@ def ints_Q_normal(data_after_pre_call,acgtIndex,index,H_or_L):
     q = np.append(q,q4)
     nor_ints = data_after_pre_call[:,H_or_L][acgtIndex[:,0] == index]/q[1]
     nor_q = q/q[1]
-    # print(nor_ints)
-    # print(nor_q)
     return nor_ints,nor_q
     
