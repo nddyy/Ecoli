@@ -11,24 +11,38 @@ signalH1 = data1.get('dataH')
 signalL1 = data1.get('dataL')
 acgtIndex = data1.get('acgtIndex1')
 
-signalH1 = np.reshape(signalH1,[-1,1])
-signalL1 = np.reshape(signalL1,(-1,1))
-acgtIndex = np.reshape(acgtIndex,(-1,1))
-signal_H_L = np.stack((signalH1[:,0],signalL1[:,0]),axis=1)
-# print(signal_H_L)
-# print(acgtIndex)
-print(data2)
-# print(signalH1,'\n',signalL1,'\n',acgtIndex)
+FOV_C = 4  
+FOV_R = 5  
+# split_FOV
 
-# # print(acgtIndex.shape[1])
-# b = np.where(acgtIndex[:,0] == 1,1,0)
-# print(b)
+image_r = signalH1.shape[0]
+image_c = signalH1.shape[1]
+fov_r_num = np.zeros(FOV_R)
+fov_c_num = np.zeros(FOV_C)
+fov_r_single_num = int(image_r / FOV_R)
+fov_c_single_num = int(image_c / FOV_C)
+fov_r_num_ex = image_r % FOV_R
+fov_c_num_ex = image_c % FOV_C
+fov_r_num = fov_r_num + fov_r_single_num
+fov_c_num = fov_c_num + fov_c_single_num
+for i in range(fov_r_num_ex):
+    fov_r_num[i] = fov_r_num[i] + 1
+for i in range(fov_c_num_ex):
+    fov_c_num[i] = fov_c_num[i] + 1
 
-# a = np.zeros(acgtIndex.shape[0])
+fov_r_limits = fov_r_num.copy()
+fov_c_limits = fov_c_num.copy()
 
-# for i in range(2):
-#     a += data_after_pre_call[:,1] * b    
-# print(a)
-# # print(np.diag(sigma_square))
+fov_r_limits = np.insert(fov_r_limits,0,0)
+fov_c_limits = np.insert(fov_c_limits,0,0)
+
+for i in range(FOV_C):
+    fov_c_limits[i+1] = fov_c_limits[i+1] + fov_c_limits[i] 
+for i in range(FOV_R):
+    fov_r_limits[i+1] = fov_r_limits[i+1] + fov_r_limits[i] 
+
+print(fov_c_limits)
+print(fov_r_limits)
+
 
 
