@@ -5,6 +5,7 @@ from matplotlib.patches import Ellipse
 import scipy.io as scio
 import get_miu_sigma_alpha
 import E_step
+import time
 
 
 if __name__ == '__main__':
@@ -14,6 +15,8 @@ if __name__ == '__main__':
     acgtIndex = data.get('acgtIndex')
     data_afterNorma = data.get('data_afterNorma')
 
+    # time_start=time.time()
+
     miu,cov,alpha = get_miu_sigma_alpha.get_miu_sigma_alpha(data_afterNorma,acgtIndex)
 
     data_deal_index6 = data_afterNorma.copy()
@@ -21,6 +24,9 @@ if __name__ == '__main__':
 
     W = E_step.update_W(data_deal_index6,miu,cov,alpha)
     W[np.where((data_afterNorma[:,0] == 65504) | (data_afterNorma[:,1] == 65504))] = [0.25,0.25,0.25,0.25]
+
+    # time_end=time.time()
+    # print('time cost',time_end-time_start,'s')
     
     fig = plt.figure(figsize=(10,5))
     ax1 = fig.add_subplot(121)
